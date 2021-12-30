@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type='text/javascript' src='https://cdn.scaledrone.com/scaledrone.min.js'></script>
+
+  <link href="https://cdn.emojidex.com/scripts/css/emojidex.min.css" rel="stylesheet" />
+  <script src="https://cdn.emojidex.com/scripts/javascript/emojidex.min.js"></script>
+  
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.0/sweetalert2.all.js"></script>
+
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" type="text/css" href="nav.css" />
+  <style>
+  	
+    .content {
+      height: 600px;
+      box-sizing: border-box;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      max-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .members-count,
+    .members-list,
+    .messages {
+      border: 1px solid #e4e4e4;
+      padding: 15px;
+      margin-bottom: 15px;
+      overflow:auto;
+      height: 50px;
+    }
+    .messages {
+      flex-shrink: 1;
+      overflow: auto;
+      height: 400px;
+    }
+    .message {
+      padding: 5px 0;
+    }
+    .message .member {
+      display: inline-block;
+    }
+    .member {
+      padding-right: 10px;
+      position: relative;
+    }
+    .message-form {
+      height:35px;
+    }
+    .message-form__input {
+      width: 80%;
+      border: 1px solid #dfdfdf;
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+    .message-form__button {
+      height: 35px;
+      width: 100px;
+      margin-left:10px;
+      font-size: 15px;
+      border:none;
+      background-color: #ff9999;
+      border-radius: 3px;
+    }
+    #timer
+    {
+    	float:right;
+    	width:90px;
+    	height:50px;
+    	background-color:white;
+    	font-size: 45px;
+		text-align:center;
+    	margin-top:5px;
+    	margin-right:15px;
+    	border-radius: 2px;
+    }
+    
+    #hint
+    {
+   		display: inline-block;
+   		font-size: 15px;
+    }   
+    
+
+
+  </style>
+</head>
+<body>
+	<!-- Header -->
+		<div id = "navbar"> 
+			<img src="https://i.imgur.com/wFPSJRj.gif" id="logo" >
+			<a href="home.jsp">BLINK</a>
+			<a href="profile.jsp">Profile</a>
+			<a href="survey.jsp">Survey</a>
+			<p id="timer"></p>
+		</div>
+		<div class="content"> 
+			<div class="members-count">-</div>
+		  <div class="members-list">-</div>
+		  <div class="messages"></div>
+		  <form class="message-form" onsubmit="return false;">
+		    <input class="message-form__input" id="chatbox" placeholder="Type a message.." type="text"/>
+  			<input class="message-form__button" id = "submit" value="Send" type="submit"/>
+  			<p id = "hint">Type ':' for Emojis! :heart:</p>
+		  </form>
+		  
+		  
+	<script type="text/javascript">	  
+		  
+		  var channelid1 = "5wDa5reT611UkHQu";
+		  var channelid2 = "gVrFPqtcIlaJW9Be";		//channel id for other channels
+		  var changelid3 = "XFfUV24GoiohFLCs";
+		  
+		  function swapid()							//call this after matching two ppl
+		  {
+			  var temp = channelid1;
+			  channelid1 = channelid2;
+			  channelid2 = channelid3;
+			  channelid3 = temp;
+		  }
+		  		  
+//emoji stuff------------------------------------------------------------------------------>
+
+		  		  
+		//set interval 
+		//disable button until 2 users
+
+		  $(document).ready(function() { // initialize after the page has loaded
+			  // put your other initialization code here
+			  timer();
+			  var EC = new EmojidexClient({ onReady: function(client) {
+				  	$("#submit").click(function() {
+				  	  console.log("Send button clicked!");
+				  	});
+				  }
+			  });
+
+			  $(".message-form__input").emojidexAutocomplete({"listLimit": 3});
+
+			  console.log("body3");
+			  $("body").emojidexReplace({ });
+			});  
+			  
+		  function timer(){
+			    var sec = 30;	//120
+			    var timer = setInterval(function(){
+			        document.getElementById('timer').innerHTML=sec;
+			        sec--;
+			        if (sec < 0) {
+			            clearInterval(timer);
+						alert();
+			        }
+			    }, 1000);
+			}
+	
+//alert stuff----------------------------------------------------------------------->
+
+		function alert()
+		{
+			swal({
+				title: "<font color='white'> Would you like to reveal your information to the other party?",
+				type: 'question',
+				background: '#dd661c',
+				backdrop: `
+					rgba(255, 153, 153, 0.5)
+				    url("http://bestanimations.com/Signs&Shapes/Hearts/manyhearts/many-little-heart-make-big-heart-gif.gif")
+   					center top
+    				no-repeat`,
+				allowOutsideClick: false,
+				allowEscapeKey: false,
+				showCancelButton:true,
+				confirmButtonColor: '#ff9999',
+				confirmButtonText: 'Reveal',
+				cancelButtonText: 'Reject',
+			}).then((result) => {
+				if(result.value){
+					
+					console.log("Confirm");
+					$.ajax({
+						url:'GetSurvey',
+						data:{
+							id: "1"
+						},
+						type:'post',
+						success: function(response)
+						{
+							data = response;
+							var answers = data.split("|");
+							SystemMessage('Name:' + answers[0]); 
+							setTimeout(SystemMessage('Email: ' + answers[1]),50);
+							setTimeout(SystemMessage('Age: ' + answers[2]),100);
+							setTimeout(SystemMessage('Gender: ' + answers[3]),150);
+							setTimeout(SystemMessage('Gender Preference: ' + answers[4]),200);
+							setTimeout(SystemMessage('Indoor/Outdoor: ' + answers[5]),250);
+							setTimeout(SystemMessage('EarlyBird/NighOwl: ' + answers[6]),300);
+							setTimeout(SystemMessage('Cat/Dog: ' + answers[7]),350);
+							setTimeout(SystemMessage('Music: ' + answers[8]),400);
+							setTimeout(SystemMessage('Sports: ' + answers[9]),450);
+							setTimeout(SystemMessage('Workout: ' + answers[10]),500);
+							setTimeout(SystemMessage('Ideal Date: ' + answers[11]),550);
+							
+							console.log(data);
+						}
+					});
+					
+					document.getElementById("chatbox").disabled = true;
+					document.getElementById("submit").disabled = true;
+				}
+				else if (result.dismiss === swal.DismissReason.cancel)
+				{
+					SystemMessage('Refused to Reveal Information :broken heart:');
+					document.getElementById("chatbox").disabled = true;
+					document.getElementById("submit").disabled = true;
+					window.location.href = "home.jsp";
+				}
+			});
+
+		}
+	
+		  
+//chat page stuff-------------------------------------------------------------------->
+
+		  const drone = new ScaleDrone(channelid1, {
+		    data: { // Will be sent out as clientData via events
+		      name: "jchailatte",
+		      color: getRandomColor(),
+		    },
+		  });
+		
+		  let members = [];
+		
+		  drone.on('open', error => {
+		    if (error) {
+		      return console.error(error);
+		    }
+		    console.log('Successfully connected to Scaledrone');
+		
+		    const room = drone.subscribe('observable-room');
+		    room.on('open', error => {
+		      if (error) {
+		        return console.error(error);
+		      }
+		      console.log('Successfully joined room');
+		    });
+		
+		    room.on('members', m => {
+		      members = m;
+		      updateMembersDOM();
+		    });
+		
+		    room.on('member_join', member => {
+		      members.push(member);
+		      updateMembersDOM();
+		    });
+		
+		    room.on('member_leave', ({id}) => {
+		      const index = members.findIndex(member => member.id === id);
+		      members.splice(index, 1);
+		      updateMembersDOM();
+		    });
+		
+		    room.on('data', (text, member) => {
+		      if (member) {
+		        addMessageToListDOM(text, member);
+		      } else {
+		        // Message is from server
+		      }
+		    });
+		  });
+		
+		  drone.on('close', event => {
+		    console.log('Connection was closed', event);
+		  });
+		
+		  drone.on('error', error => {
+		    console.error(error);
+		  });
+		
+		  function getRandomColor() {
+		    return '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+		  }
+		
+		  //------------- DOM STUFF
+		
+		  const DOM = {
+		    membersCount: document.querySelector('.members-count'),
+		    membersList: document.querySelector('.members-list'),
+		    messages: document.querySelector('.messages'),
+		    input: document.querySelector('.message-form__input'),
+		    form: document.querySelector('.message-form'),
+		  };
+		
+		  DOM.form.addEventListener('submit', sendMessage);
+		
+		  function sendMessage() {
+		    const value = DOM.input.value;
+		    if (value === '') {
+		      return;
+		    }
+		    DOM.input.value = '';
+		    console.log(value);
+		    drone.publish({
+		      room: 'observable-room',
+		      message: value,
+		    });
+		  }
+		  
+		  function SystemMessage(text){
+			  drone.publish({
+			      room: 'observable-room',
+			      message: text,
+			  });
+		  }
+		
+		  function createMemberElement(member) {
+		    const { name, color } = member.clientData;
+		    const el = document.createElement('div');
+		    el.appendChild(document.createTextNode(name));
+		    el.className = 'member';
+		    el.style.color = color;
+		    return el;
+		  }
+		
+		  function updateMembersDOM() {
+		    DOM.membersCount.innerText = `${members.length} users in room:`;
+		    DOM.membersList.innerHTML = '';
+		    members.forEach(member =>
+		      DOM.membersList.appendChild(createMemberElement(member))
+		    );
+		  }
+		
+		  function createMessageElement(text, member) {
+		    const el = document.createElement('div');
+		    el.appendChild(createMemberElement(member));
+		    el.appendChild(document.createTextNode(text));
+		    el.className = 'message';
+		    return el;
+		  }
+		
+		  function addMessageToListDOM(text, member) {
+		    const el = DOM.messages;
+		    const wasTop = el.scrollTop === el.scrollHeight - el.clientHeight;
+		    el.appendChild(createMessageElement(text, member));
+		    el.scrollTop = el.scrollHeight;
+		  } 
+		  
+		  
+		  </script>
+		
+		</div>
+  
+  		<footer>
+		</footer>
+</body>
+
+</html>

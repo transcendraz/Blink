@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Survey</title>
+		<link rel="stylesheet" type="text/css" href="css.css" />
+    	<script src="https://code.jquery.com/jquery-3.1.1.js"></script>
+	</head>
+	<header>
+		<div class="blinkText">BLINK</div>
+  	</header>
+	<body>
+		<div class="signedInErrorMessage"></div>
+        <form id="myForm" role="form">
+        	Name: <input name="name" id="surveyPageName" value = ""><div id="surveyPageError1"></div> <br> <br>
+        	Age: <input name="age" id="surveyPageAge" value = ""><div id="surveyPageError2"></div> <br> <br>
+        	Gender
+        	<p>
+        		<input type="radio" name="gender" value="male" id="surveyPageGender1"> Male<input type="radio" name="gender" value="female" id="surveyPageGender2"> Female <div id="surveyPageError3"></div>
+        	</p>
+        	Gender Preference
+        	<p>
+        		<input type="radio" name="genderPreference" value="male" id="surveyPageGenderPreference1"> Male<input type="radio" name="genderPreference" value="female" id="surveyPageGenderPreference2"> Female<div id="surveyPageError4"></div><br>		
+        	</p>
+			Indoor/Outdoor
+			<p>
+				<input type="radio" name="indoorOutdoor" value="indoor" id="surveyPageIndoorOutdoor1"> Indoor<input type="radio" name="indoorOutdoor" value="outdoor" id="surveyPageIndoorOutdoor2"> Outdoor<div id="surveyPageError5"></div><br>
+			</p>
+			Early Bird/Night Owl
+			<p>
+				<input type="radio" name="earlyLate" value="earlyBird" id="surveyPageEarlyBird1"> Early Bird<input type="radio" name="earlyLate" value="nightOwl" id="surveyPageEarlyBird2"> Night Owl<div id="surveyPageError6"></div><br>
+			</p>
+			Cat/Dog Person
+			<p>
+				<input type="radio" name="catDog" value="cat" id="surveyPageCatDog1"> Cat<input type="radio" name="catDog" value="dog" id="surveyPageCatDog2"> Dog<div id="surveyPageError7"></div><br>
+			</p>
+			Favourite Music Genre
+			<p>
+				<input type="radio" name="music" value="classical" id="surveyPageMusic1"> Classical<input type="radio" name="music" value="pop" id="surveyPageMusic2"> Pop<input type="radio" name="music" value="hipHop" id="surveyPageMusic3"> Hip Hop<input type="radio" name="music" value="rock" id="surveyPageMusic4"> Rock<input type="radio" name="music" value="country" id="surveyPageMusic5"> Country<input type="radio" name="music" value="international" id="surveyPageMusic6"> International<div id="surveyPageError8"></div><br>
+			</p>
+			Do you like sports?
+			<p>
+				<input type="radio" name="sports" value="yes" id="surveyPageSports1"> Yes<input type="radio" name="sports" value="no" id="surveyPageSports2"> No<div id="surveyPageError9"></div><br>
+			</p>
+			Do you workout?
+			<p>
+				<input type="radio" name="workout" value="yes" id="surveyPageWorkout1"> Yes<input type="radio" name="workout" value="no" id="surveyPageWorkout2"> No<div id="surveyPageError10"></div><br>
+			</p>
+			Describe your ideal date:
+			<p>
+				<textarea name="idealDate" rows="10" cols="30" id="surveyPageIdealDate" placeholder = "Please describe your ideal date.">
+				</textarea>
+				<div id="surveyPageError11"></div>
+			</p>
+			<input class="button" type="button" id="submitSurvey" name="submitSurvey" value="Go to chat" onclick="validate()">
+			
+		</form>
+		<script>
+			$.ajax({
+		        url: 'getSurveyPageDataBLINK',
+		        type: 'POST',
+		        success: function(response) {
+		        	console.log(response);
+					processSurveyPageData(response);
+		        },
+		        error: function(error) {
+		            console.log(error);
+		        }
+			});
+			
+			function processSurveyPageData(response)
+			{
+				var data = response.split(',', 100);
+				var name = data[0];
+				var age = data[1];
+				var gender = data[2];
+				var genderPreference = data[3];
+				var indoorOutdoor = data[4];
+				var earlyBirdNightOwl = data[5];
+				var catDog = data[6];
+				var music = data[7];
+				var sports = data[8];
+				var workout = data[9];
+				var idealDate = data[10];
+				
+				document.getElementById('surveyPageName').placeholder = name;
+				document.getElementById('surveyPageAge').placeholder = age;
+				document.getElementById('surveyPageIdealDate').placeholder = idealDate;
+				
+				if (gender == "male")
+				{
+					document.getElementById('surveyPageGender1').checked = true;
+					document.getElementById('surveyPageGender2').checked = false;
+				}
+				else if (gender == "female")
+				{
+					document.getElementById('surveyPageGender2').checked = true;
+					document.getElementById('surveyPageGender1').checked = false;
+				}
+				
+				if (genderPreference == "male")
+				{
+					document.getElementById('surveyPageGenderPreference1').checked = true;
+					document.getElementById('surveyPageGenderPreference2').checked = false;
+				}
+				else if (genderPreference == "female")
+				{
+					document.getElementById('surveyPageGenderPreference2').checked = true;
+					document.getElementById('surveyPageGenderPreference1').checked = false;
+				}
+				
+				if (indoorOutdoor == "indoor")
+				{
+					document.getElementById('surveyPageIndoorOutdoor1').checked = true;
+					document.getElementById('surveyPageIndoorOutdoor2').checked = false;
+				}
+				else if (indoorOutdoor == "outdoor")
+				{
+					document.getElementById('surveyPageIndoorOutdoor2').checked = true;
+					document.getElementById('surveyPageIndoorOutdoor1').checked = false;
+				}
+				
+				if (earlyBirdNightOwl == "earlyBird")
+				{
+					document.getElementById('surveyPageEarlyBird1').checked = true;
+					document.getElementById('surveyPageEarlyBird2').checked = false;
+				}
+				else if (earlyBirdNightOwl == "nightOwl")
+				{
+					document.getElementById('surveyPageEarlyBird2').checked = true;
+					document.getElementById('surveyPageEarlyBird1').checked = false;
+				}
+				
+				if (catDog == "cat")
+				{
+					document.getElementById('surveyPageCatDog1').checked = true;
+					document.getElementById('surveyPageCatDog2').checked = false;
+				}
+				else if (catDog == "dog")
+				{
+					document.getElementById('surveyPageCatDog2').checked = true;
+					document.getElementById('surveyPageCatDog1').checked = false;
+				}
+				
+				if (music == "classical")
+				{
+					document.getElementById('surveyPageMusic1').checked = true;
+					document.getElementById('surveyPageMusic2').checked = false;
+					document.getElementById('surveyPageMusic3').checked = false;
+					document.getElementById('surveyPageMusic4').checked = false;
+					document.getElementById('surveyPageMusic5').checked = false;
+					document.getElementById('surveyPageMusic6').checked = false;
+				}
+				else if (music == "pop")
+				{
+					document.getElementById('surveyPageMusic1').checked = false;
+					document.getElementById('surveyPageMusic2').checked = true;
+					document.getElementById('surveyPageMusic3').checked = false;
+					document.getElementById('surveyPageMusic4').checked = false;
+					document.getElementById('surveyPageMusic5').checked = false;
+					document.getElementById('surveyPageMusic6').checked = false;
+				}
+				else if (music == "hipHop")
+				{
+					document.getElementById('surveyPageMusic1').checked = false;
+					document.getElementById('surveyPageMusic2').checked = false;
+					document.getElementById('surveyPageMusic3').checked = true;
+					document.getElementById('surveyPageMusic4').checked = false;
+					document.getElementById('surveyPageMusic5').checked = false;
+					document.getElementById('surveyPageMusic6').checked = false;
+				}
+				else if (music == "rock")
+				{
+					document.getElementById('surveyPageMusic1').checked = false;
+					document.getElementById('surveyPageMusic2').checked = false;
+					document.getElementById('surveyPageMusic3').checked = false;
+					document.getElementById('surveyPageMusic4').checked = true;
+					document.getElementById('surveyPageMusic5').checked = false;
+					document.getElementById('surveyPageMusic6').checked = false;
+				}
+				else if (music == "country")
+				{
+					document.getElementById('surveyPageMusic1').checked = false;
+					document.getElementById('surveyPageMusic2').checked = false;
+					document.getElementById('surveyPageMusic3').checked = false;
+					document.getElementById('surveyPageMusic4').checked = false;
+					document.getElementById('surveyPageMusic5').checked = true;
+					document.getElementById('surveyPageMusic6').checked = false;
+				}
+				else if (music == "international")
+				{
+					document.getElementById('surveyPageMusic1').checked = false;
+					document.getElementById('surveyPageMusic2').checked = false;
+					document.getElementById('surveyPageMusic3').checked = false;
+					document.getElementById('surveyPageMusic4').checked = false;
+					document.getElementById('surveyPageMusic5').checked = false;
+					document.getElementById('surveyPageMusic6').checked = true;
+				}
+				
+				if (sports == "yes")
+				{
+					document.getElementById('surveyPageSports1').checked = true;
+					document.getElementById('surveyPageSports2').checked = false;
+				}
+				else if (sports == "no")
+				{
+					document.getElementById('surveyPageSports1').checked = false;
+					document.getElementById('surveyPageSports2').checked = true;
+				}
+				
+				if (workout == "yes")
+				{
+					document.getElementById('surveyPageWorkout1').checked = true;
+					document.getElementById('surveyPageWorkout2').checked = false;
+				}
+				else if (workout == "no")
+				{
+					document.getElementById('surveyPageWorkout1').checked = false;
+					document.getElementById('surveyPageWorkout2').checked = true;
+				}
+			}
+			
+			function validate()
+			{
+				var containsError = false;
+				//validate name
+ 				if (document.getElementById('surveyPageName').value == "")
+				{
+					document.getElementById('surveyPageError1').html = "Please enter your name";
+					containsError = true;
+				}
+				else
+				{
+					document.getElementById('surveyPageError1').html = "";
+					containsError = false;
+				} 
+				
+				//validate age
+				if (document.getElementById('surveyPageAge').value == "")
+				{
+					document.getElementById('surveyPageError2').html = "Please enter your age";
+					containsError = true;
+				}
+				else
+				{
+					document.getElementById('surveyPageError2').html = "";
+					containsError = false;
+				}
+				
+				//validate gender
+				if (document.getElementById('surveyPageGender1').checked == false && document.getElementById('surveyPageGender2').checked == false)
+				{
+					document.getElementById('surveyPageError3').html = "Please select your gender";
+					containsError = true;
+				}
+				else
+				{
+					document.getElementById('surveyPageError3').html = "";
+					containsError = false;
+				}
+				
+				//validate gender preference
+				if (document.getElementById('surveyPageGenderPreference1').checked == false && document.getElementById('surveyPageGenderPreference2').checked == false)
+				{
+					document.getElementById('surveyPageError4').html = "Please select your gender preference";
+					containsError = true;
+				}
+				else
+				{
+					document.getElementById('surveyPageError4').html = "";
+					containsError = false;
+				}
+				
+				//validate indoor/outdoor
+				if (document.getElementById('surveyPageIndoorOutdoor1').checked == false && document.getElementById('surveyPageIndoorOutdoor2').checked == false)
+				{
+					document.getElementById('surveyPageError5').html = "Please select your indoor/outdoor preference";
+					containsError = true;
+				}
+				else
+				{
+					document.getElementById('surveyPageError5').html = "";
+					containsError = false;
+				}
+				
+				//validate early bird/night owl
+				if (document.getElementById('surveyPageEarlyBird1').checked == false && document.getElementById('surveyPageEarlyBird2').checked == false)
+				{
+					document.getElementById('surveyPageError6').html = "Please select your early bird/night owl preference";
+					containsError = true;
+				}
+				else
+				{
+					document.getElementById('surveyPageError6').html = "";
+					containsError = false;
+				}
+				
+				//validate cat/dog
+				if (document.getElementById('surveyPageCatDog1').checked == false && document.getElementById('surveyPageCatDog2').checked == false)
+				{
+					document.getElementById('surveyPageError7').html = "Please select your cat/dog preference";
+					containsError = true;
+				}
+				else
+				{
+					document.getElementById('surveyPageError7').html = "";
+					containsError = false;
+				}
+				
+				//validate music
+				if (document.getElementById('surveyPageMusic1').checked == false && document.getElementById('surveyPageMusic2').checked == false && document.getElementById('surveyPageMusic3').checked == false && document.getElementById('surveyPageMusic4').checked == false && document.getElementById('surveyPageMusic5').checked == false && document.getElementById('surveyPageMusic6').checked == false)
+				{
+					document.getElementById('surveyPageError8').html = "Please select your music preference";
+					containsError = true;
+				}
+				else
+				{
+					document.getElementById('surveyPageError8').html = "";
+					containsError = false;
+				}
+				
+				//validate sports 
+				if (document.getElementById('surveyPageSports1').checked == false && document.getElementById('surveyPageSports2').checked == false)
+				{
+					document.getElementById('surveyPageError9').html = "Please select your sports preference";
+					containsError = true;
+				}
+				else
+				{
+					document.getElementById('surveyPageError9').html = "";
+					containsError = false;
+				}
+				
+				//validate workout
+				if (document.getElementById('surveyPageWorkout1').checked == false && document.getElementById('surveyPageWorkout2').checked == false)
+				{
+					document.getElementById('surveyPageError10').html = "Please select your workout preference";
+					containsError = true;
+				}
+				else
+				{
+					document.getElementById('surveyPageError10').html = "";
+					containsError = false;
+				}
+				
+				//validate ideal date
+				if (document.getElementById('surveyPageIdealDate').value == "")
+				{
+					document.getElementById('surveyPageError11').html = "Please input your ideal date preference";
+					containsError = true;
+				}
+				else
+				{
+					document.getElementById('surveyPageError11').html = "";
+					containsError = false;
+				}
+				
+				if (!containsError)
+				{
+					sendFormData();
+				}
+				
+				
+			}
+			
+			function sendFormData()
+			{
+				document.getElementById('hiddenInput1').html = document.getElementById('surveyPageName').html;
+				document.getElementById('hiddenInput2').html = document.getElementById('surveyPageAge').html;
+				document.getElementById('hiddenInput11').html = document.getElementById('surveyPageIdealDate').html;
+				
+				//gender
+				if (document.getElementById('surveyPageGender1').checked == true && document.getElementById('surveyPageGender2').checked == false)
+				{
+					document.getElementById('hiddenInput3').html = "male";
+				}
+				else if (document.getElementById('surveyPageGender1').checked == false && document.getElementById('surveyPageGender2').checked == true)
+				{
+					document.getElementById('hiddenInput3').html = "female";
+				}
+				
+				//gender preference
+				if (document.getElementById('surveyPageGenderPreference1').checked == true && document.getElementById('surveyPageGenderPreference2').checked == false)
+				{
+					document.getElementById('hiddenInput4').html = "male";
+				}
+				else if (document.getElementById('surveyPageGenderPreference1').checked == false && document.getElementById('surveyPageGenderPreference2').checked == true)
+				{
+					document.getElementById('hiddenInput4').html = "female";
+				}
+				
+				//indoor 
+				if (document.getElementById('surveyPageIndoorOutdoor1').checked == true && document.getElementById('surveyPageIndoorOutdoor2').checked == false)
+				{
+					document.getElementById('hiddenInput5').html = "indoor";
+				}
+				else if (document.getElementById('surveyPageIndoorOutdoor1').checked == false && document.getElementById('surveyPageIndoorOutdoor2').checked == true)
+				{
+					document.getElementById('hiddenInput5').html = "outdoor";
+				}
+				
+				//early bird 
+				if (document.getElementById('surveyPageEarlyBird1').checked == true && document.getElementById('surveyPageEarlyBird2').checked == false)
+				{
+					document.getElementById('hiddenInput6').html = "earlyBird";
+				}
+				else if (document.getElementById('surveyPageEarlyBird1').checked == false && document.getElementById('surveyPageEarlyBird2').checked == true)
+				{
+					document.getElementById('hiddenInput6').html = "nightOwl";
+				}
+				
+				//cat dog
+				if (document.getElementById('surveyPageCatDog1').checked == true && document.getElementById('surveyPageCatDog2').checked == false)
+				{
+					document.getElementById('hiddenInput7').html = "cat";
+				}
+				else if (document.getElementById('surveyPageCatDog1').checked == false && document.getElementById('surveyPageCatDog2').checked == true)
+				{
+					document.getElementById('hiddenInput7').html = "dog";
+				}
+				
+				//music 
+				if (document.getElementById('surveyPageMusic1').checked == true && document.getElementById('surveyPageMusic2').checked == false && document.getElementById('surveyPageMusic3').checked == false && document.getElementById('surveyPageMusic4').checked == false && document.getElementById('surveyPageMusic5').checked == false && document.getElementById('surveyPageMusic6').checked == false)
+				{
+					document.getElementById('hiddenInput8').html = "classical";
+				}
+				else if (document.getElementById('surveyPageMusic1').checked == false && document.getElementById('surveyPageMusic2').checked == true && document.getElementById('surveyPageMusic3').checked == false && document.getElementById('surveyPageMusic4').checked == false && document.getElementById('surveyPageMusic5').checked == false && document.getElementById('surveyPageMusic6').checked == false)
+				{
+					document.getElementById('hiddenInput8').html = "pop";
+				}
+				else if (document.getElementById('surveyPageMusic1').checked == false && document.getElementById('surveyPageMusic2').checked == false && document.getElementById('surveyPageMusic3').checked == true && document.getElementById('surveyPageMusic4').checked == false && document.getElementById('surveyPageMusic5').checked == false && document.getElementById('surveyPageMusic6').checked == false)
+				{
+					document.getElementById('hiddenInput8').html = "hipHop";
+				}
+				else if (document.getElementById('surveyPageMusic1').checked == false && document.getElementById('surveyPageMusic2').checked == false && document.getElementById('surveyPageMusic3').checked == false && document.getElementById('surveyPageMusic4').checked == true && document.getElementById('surveyPageMusic5').checked == false && document.getElementById('surveyPageMusic6').checked == false)
+				{
+					document.getElementById('hiddenInput8').html = "rock";
+				}
+				else if (document.getElementById('surveyPageMusic1').checked == false && document.getElementById('surveyPageMusic2').checked == false && document.getElementById('surveyPageMusic3').checked == false && document.getElementById('surveyPageMusic4').checked == false && document.getElementById('surveyPageMusic5').checked == true && document.getElementById('surveyPageMusic6').checked == false)
+				{
+					document.getElementById('hiddenInput8').html = "country";
+				}
+				else if (document.getElementById('surveyPageMusic1').checked == false && document.getElementById('surveyPageMusic2').checked == false && document.getElementById('surveyPageMusic3').checked == false && document.getElementById('surveyPageMusic4').checked == false && document.getElementById('surveyPageMusic5').checked == false && document.getElementById('surveyPageMusic6').checked == true)
+				{
+					document.getElementById('hiddenInput8').html = "international";
+				}
+				
+				//sports
+				if (document.getElementById('surveyPageSports1').checked == true && document.getElementById('surveyPageSports2').checked == false)
+				{
+					document.getElementById('hiddenInput9').html = "yes";
+				}
+				else if (document.getElementById('surveyPageSports1').checked == false && document.getElementById('surveyPageSports2').checked == true)
+				{
+					document.getElementById('hiddenInput9').html = "no";
+				}
+				
+				//workout
+				if (document.getElementById('surveyPageWorkout1').checked == true && document.getElementById('surveyPageWorkout2').checked == false)
+				{
+					document.getElementById('hiddenInput10').html = "yes";
+				}
+				else if (document.getElementById('surveyPageSports1').checked == false && document.getElementById('surveyPageSports2').checked == true)
+				{
+					document.getElementById('hiddenInput10').html = "no";
+				}
+				
+				$.ajax({
+			        url: 'sendSurveyPageData',
+			        data: $(myHiddenForm).serialize(),
+			        type: 'POST',
+			        success: function(response) {
+			        	console.log(response);
+			        	
+			        	if (response != "")
+		        		{
+		        			window.location.href = 'chatroom.html';
+		        		}
+			        	else
+			        	{
+			        		document.getElementById('signedInErrorMessage').html = "Must be signed in to update survey page data";
+			        	}
+						
+			        },
+			        error: function(error) {
+			            console.log(error);
+			        }
+				});
+			}
+			
+		</script>
+ 			
+	</body>
+	<form id="myHiddenForm" role="form">
+		<input id="hiddenInput1" name="hiddenSearch" type="hidden">
+		<input id="hiddenInput2" name="hiddenSearch" type="hidden">
+		<input id="hiddenInput3" name="hiddenSearch" type="hidden">
+		<input id="hiddenInput4" name="hiddenSearch" type="hidden">
+		<input id="hiddenInput5" name="hiddenSearch" type="hidden">
+		<input id="hiddenInput6" name="hiddenSearch" type="hidden">
+		<input id="hiddenInput7" name="hiddenSearch" type="hidden">
+		<input id="hiddenInput8" name="hiddenSearch" type="hidden">
+		<input id="hiddenInput9" name="hiddenSearch" type="hidden">
+		<input id="hiddenInput10" name="hiddenSearch" type="hidden">
+		<input id="hiddenInput11" name="hiddenSearch" type="hidden">
+	</form>
+	
+	<footer>
+	</footer>
+</html>

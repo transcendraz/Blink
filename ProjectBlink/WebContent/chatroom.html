@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type='text/javascript' src='https://cdn.scaledrone.com/scaledrone.min.js'></script>
+  <script type='text/javascript' src = 'http://cdn.emojidex.com/scripts/javascript/emojidex-client.min.js'></script>
+  <!--<script type='text/javascript' src='http://0.0.0.0:8080/scaledrone.js'></script>-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" type="text/css" href="nav.css" />
+	<script src="nav.js"></script>
+  <style>
+  	
+    .content {
+    	height: 600px;
+      box-sizing: border-box;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      max-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .members-count,
+    .members-list,
+    .messages {
+      border: 1px solid #e4e4e4;
+      padding: 15px;
+      margin-bottom: 15px;
+      overflow:auto;
+      height: 50px;
+    }
+    .messages {
+      flex-shrink: 1;
+      overflow: auto;
+      height: 400px;
+    }
+    .message {
+      padding: 5px 0;
+    }
+    .message .member {
+      display: inline-block;
+    }
+    .member {
+      padding-right: 10px;
+      position: relative;
+    }
+    .message-form {
+      height:35px;
+    }
+    .message-form__input {
+      width: 90%;
+      border: 1px solid #dfdfdf;
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+    .message-form__button {
+      height: 35px;
+      width: 100px;
+      margin-left:10px;
+      font-size: 15px;
+      border:none;
+      background-color: #ff9999;
+      border-radius: 3px;
+    }
+    
+    #logo
+    {
+    	float:left;
+    	padding-left:20px;
+    	padding-right:10px;
+    	width: 100px;
+    	height: auto;
+    }
+  </style>
+</head>
+<body>
+	<!-- Header -->
+		<div id = "navbar"> 
+			<img src="https://i.imgur.com/gjMbF0s.png" id="logo" >
+			<a href="home.jsp">BLINK</a>
+			<a href="profile.jsp">Profile</a>
+			<a href="survey.jsp">Survey</a>
+		</div>
+		<div class="content"> 
+			<div class="members-count">-</div>
+		  <div class="members-list">-</div>
+		  <div class="messages"></div>
+		  <form class="message-form" onsubmit="return false;">
+		    <input class="message-form__input" placeholder="Type a message.." type="text"/>
+		    <input class="message-form__button" value="Send" type="submit"/>
+		  </form>
+		  <script type="text/javascript">
+		  
+		  
+		  var channelid1 = "5wDa5reT611UkHQu";
+		  var channelid2 = "gVrFPqtcIlaJW9Be";		//channel id for other channels
+		  var changelid3 = "XFfUV24GoiohFLCs";
+		  
+		  //function to swap channel id to another one here <==============================
+			  
+		  window.setTimeout(question, 10000);
+		  
+		  function question()
+		  {
+			  //websocket
+			  //true and false
+			  //decide to reveal info or not
+			  
+			  window.alert("itsa working");
+		  }
+		  
+		  emojidex = new EmojidexClient({
+			  // wait initialization
+			  onReady: (EC) => {
+				  emojidex.User.login({'authtype': 'token', 'username': 'Gale2132', 'auth_token': '7a26152d82edd1a8d9b03436d2fa12698050e9077af83ffe'});			  }
+			});
+		  
+		  //function findemoji()
+		  //some crap i will figure out later
+		 	//{
+			  //emojidex.Search.search(search_word, result_emoji => {
+			//	  console.log(result_emoji);
+			//	});
+		  //}
+		  
+		  const drone = new ScaleDrone(channelid1, {
+		    data: { // Will be sent out as clientData via events
+		      name: 'billybob' + ': ',			//getsessionid("username")
+		      color: getRandomColor(),
+		    },
+		  });
+		
+		  let members = [];
+		
+		  drone.on('open', error => {
+		    if (error) {
+		      return console.error(error);
+		    }
+		    console.log('Successfully connected to Scaledrone');
+		
+		    const room = drone.subscribe('observable-room');
+		    room.on('open', error => {
+		      if (error) {
+		        return console.error(error);
+		      }
+		      console.log('Successfully joined room');
+		    });
+		
+		    room.on('members', m => {
+		      members = m;
+		      updateMembersDOM();
+		    });
+		
+		    room.on('member_join', member => {
+		      members.push(member);
+		      updateMembersDOM();
+		    });
+		
+		    room.on('member_leave', ({id}) => {
+		      const index = members.findIndex(member => member.id === id);
+		      members.splice(index, 1);
+		      updateMembersDOM();
+		    });
+		
+		    room.on('data', (text, member) => {
+		      if (member) {
+		        addMessageToListDOM(text, member);
+		      } else {
+		        // Message is from server
+		      }
+		    });
+		  });
+		
+		  drone.on('close', event => {
+		    console.log('Connection was closed', event);
+		  });
+		
+		  drone.on('error', error => {
+		    console.error(error);
+		  });
+		
+		  function getRandomColor() {
+		    return '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+		  }
+		
+		  //------------- DOM STUFF
+		
+		  const DOM = {
+		    membersCount: document.querySelector('.members-count'),
+		    membersList: document.querySelector('.members-list'),
+		    messages: document.querySelector('.messages'),
+		    input: document.querySelector('.message-form__input'),
+		    form: document.querySelector('.message-form'),
+		  };
+		
+		  DOM.form.addEventListener('submit', sendMessage);
+		
+		  function sendMessage() {
+		    const value = DOM.input.value;
+		    if (value === '') {
+		      return;
+		    }
+		    DOM.input.value = '';
+		    drone.publish({
+		      room: 'observable-room',
+		      message: value,
+		    });
+		  }
+		
+		  function createMemberElement(member) {
+		    const { name, color } = member.clientData;
+		    const el = document.createElement('div');
+		    el.appendChild(document.createTextNode(name));
+		    el.className = 'member';
+		    el.style.color = color;
+		    return el;
+		  }
+		
+		  function updateMembersDOM() {
+		    DOM.membersCount.innerText = `${members.length} users in room:`;
+		    DOM.membersList.innerHTML = '';
+		    members.forEach(member =>
+		      DOM.membersList.appendChild(createMemberElement(member))
+		    );
+		  }
+		
+		  function createMessageElement(text, member) {
+		    const el = document.createElement('div');
+		    el.appendChild(createMemberElement(member));
+		    el.appendChild(document.createTextNode(text));
+		    el.className = 'message';
+		    return el;
+		  }
+		
+		  function addMessageToListDOM(text, member) {
+		    const el = DOM.messages;
+		    const wasTop = el.scrollTop === el.scrollHeight - el.clientHeight;
+		    el.appendChild(createMessageElement(text, member));
+		    el.scrollTop = el.scrollHeight;
+		  } 
+		  
+		  </script>
+		
+		</div>
+  
+  		<footer>
+		</footer>
+</body>
+
+</html>

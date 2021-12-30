@@ -1,0 +1,67 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+footer {
+	width: 100%;
+	height: 50px;
+	background-color: #dd661c;
+	position: absolute;
+	bottom: 0;
+	overflow: hidden;
+}
+
+/* Navbar */
+#navbar {
+	overflow: hidden;
+	background-color: #dd661c;
+}
+
+/* Navbar links */
+#navbar a {
+	float: left;
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px;
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 30px;
+}
+
+a:hover {
+    background-color: #ff9999;
+} 
+
+#logo
+{
+  	float:left;
+   	padding-left:20px;
+   	padding-right:10px;
+   	width: 100px;
+   	height: auto;
+}
+
+/* Page content */
+.content {
+	padding: 16px;
+	overflow: auto;
+	height: auto;
+}
+
+
+/* The sticky class is added to the navbar with JS
+	when it reaches its scroll position */
+.sticky {
+	position: fixed;
+	top: 0;
+	width: 100%;
+}
+
+/* 	Add some top padding to the page content 
+	to prevent sudden quick movement (as the 
+	navbar gets a new position at the top of the page) */
+.sticky + .content {
+	padding-top: 60px;
+}
